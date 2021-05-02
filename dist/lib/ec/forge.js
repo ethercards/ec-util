@@ -31,11 +31,11 @@ var Forge = /** @class */ (function () {
         this.requires(dstTokenId > 10 && dstTokenId <= 10000, "dstTokenId must be in range between 10 and 10000");
         this.requires(srcTokenId > 10 && srcTokenId <= 10000, "srcTokenId must be in range between 10 and 10000");
         this.requires(dstTokenId != srcTokenId, "dstTokenId must be different than srcTokenId");
-        this.requires(layer1.length == 2, "Layer1 length must be 2");
-        this.requires(layer2.length == 2, "Layer2 length must be 2");
-        this.requires(layer3.length == 2, "Layer3 length must be 2");
-        this.requires(layer4.length == 2, "Layer4 length must be 2");
-        this.requires(layer5.length == 2, "Layer5 length must be 2");
+        this.requires(this.isBoolean(layer1), "Layer1 length must be boolean");
+        this.requires(this.isBoolean(layer2), "Layer2 length must be boolean");
+        this.requires(this.isBoolean(layer3), "Layer3 length must be boolean");
+        this.requires(this.isBoolean(layer4), "Layer4 length must be boolean");
+        this.requires(this.isBoolean(layer5), "Layer5 length must be boolean");
         var bytes = new ByteArray_1.default(Buffer.alloc(2 + 2));
         // add version - 2 bytes - uint16
         bytes.writeUnsignedShort(this.version);
@@ -47,11 +47,11 @@ var Forge = /** @class */ (function () {
         // srcTokenId - 2 bytes - uint16
         bytes.writeUnsignedShort(srcTokenId);
         // add layers
-        bytes.writeBytes(Buffer.from(layer1));
-        bytes.writeBytes(Buffer.from(layer2));
-        bytes.writeBytes(Buffer.from(layer3));
-        bytes.writeBytes(Buffer.from(layer4));
-        bytes.writeBytes(Buffer.from(layer5));
+        bytes.writeBoolean(layer1);
+        bytes.writeBoolean(layer2);
+        bytes.writeBoolean(layer3);
+        bytes.writeBoolean(layer4);
+        bytes.writeBoolean(layer5);
         // add 0x start and return
         return "0x" + bytes.toString("hex"); // + data;
     };
@@ -70,19 +70,14 @@ var Forge = /** @class */ (function () {
             method_id: bytes.readUnsignedShort(),
             dstTokenId: bytes.readUnsignedShort(),
             srcTokenId: bytes.readUnsignedShort(),
-            layer1: "",
-            layer2: "",
-            layer3: "",
-            layer4: "",
-            layer5: "",
+            layer1: false,
+            layer2: false,
+            layer3: false,
+            layer4: false,
+            layer5: false,
         };
         for (var i = 1; i <= 5; i++) {
-            // empty byte array
-            var workBA = new ByteArray_1.default(2);
-            // copy bytes into work area
-            bytes.readBytes(workBA, 0, 2);
-            // 
-            result["layer" + i] = workBA.toString("binary");
+            result["layer" + i] = bytes.readBoolean();
         }
         return result;
     };
@@ -90,6 +85,9 @@ var Forge = /** @class */ (function () {
         if (!condition) {
             throw (message);
         }
+    };
+    Forge.prototype.isBoolean = function (variable) {
+        return typeof variable === "boolean";
     };
     /**
      * Remove 0x from string then return it

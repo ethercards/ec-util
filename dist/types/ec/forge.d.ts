@@ -12,7 +12,7 @@ export default class Forge {
      * @param layer5 string         Layer 5 value
      * @returns string
      */
-    encodeLayerTransfer(dstTokenId: number, srcTokenId: number, layer1: string, layer2: string, layer3: string, layer4: string, layer5: string): string;
+    encodeLayerTransfer(dstTokenId: number, srcTokenId: number, layer1: boolean, layer2: boolean, layer3: boolean, layer4: boolean, layer5: boolean): string;
     /**
      * Decode Layer transfer data
      * @param binaryString string
@@ -20,6 +20,7 @@ export default class Forge {
      */
     decodeLayerTransfer(binaryString: string): any;
     requires(condition: any, message: string): void;
+    isBoolean(variable: boolean): boolean;
     /**
      * Remove 0x from string then return it
      * @param string

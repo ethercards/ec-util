@@ -27,22 +27,21 @@ export default class Forge {
     public encodeLayerTransfer(
         dstTokenId: number,
         srcTokenId: number,
-        layer1: string,
-        layer2: string,
-        layer3: string,
-        layer4: string,
-        layer5: string
+        layer1: boolean,
+        layer2: boolean,
+        layer3: boolean,
+        layer4: boolean,
+        layer5: boolean
     ): string {
 
         this.requires(dstTokenId > 10 && dstTokenId <= 10000, "dstTokenId must be in range between 10 and 10000");
         this.requires(srcTokenId > 10 && srcTokenId <= 10000, "srcTokenId must be in range between 10 and 10000");
         this.requires(dstTokenId != srcTokenId, "dstTokenId must be different than srcTokenId");
-        this.requires(layer1.length == 2, "Layer1 length must be 2");
-        this.requires(layer2.length == 2, "Layer2 length must be 2");
-        this.requires(layer3.length == 2, "Layer3 length must be 2");
-        this.requires(layer4.length == 2, "Layer4 length must be 2");
-        this.requires(layer5.length == 2, "Layer5 length must be 2");
-
+        this.requires(this.isBoolean(layer1), "Layer1 length must be boolean");
+        this.requires(this.isBoolean(layer2), "Layer2 length must be boolean");
+        this.requires(this.isBoolean(layer3), "Layer3 length must be boolean");
+        this.requires(this.isBoolean(layer4), "Layer4 length must be boolean");
+        this.requires(this.isBoolean(layer5), "Layer5 length must be boolean");
 
         const bytes = new ByteArray(Buffer.alloc(2 + 2));
 
@@ -60,11 +59,11 @@ export default class Forge {
         bytes.writeUnsignedShort(srcTokenId);
 
         // add layers
-        bytes.writeBytes(Buffer.from(layer1));
-        bytes.writeBytes(Buffer.from(layer2));
-        bytes.writeBytes(Buffer.from(layer3));
-        bytes.writeBytes(Buffer.from(layer4));
-        bytes.writeBytes(Buffer.from(layer5));
+        bytes.writeBoolean(layer1);
+        bytes.writeBoolean(layer2);
+        bytes.writeBoolean(layer3);
+        bytes.writeBoolean(layer4);
+        bytes.writeBoolean(layer5);
 
         // add 0x start and return
         return "0x" + bytes.toString("hex"); // + data;
@@ -90,20 +89,15 @@ export default class Forge {
             method_id: bytes.readUnsignedShort(),
             dstTokenId: bytes.readUnsignedShort(),
             srcTokenId: bytes.readUnsignedShort(),
-            layer1: "",
-            layer2: "",
-            layer3: "",
-            layer4: "",
-            layer5: "",
+            layer1: false,
+            layer2: false,
+            layer3: false,
+            layer4: false,
+            layer5: false,
         };
 
         for(let i = 1; i <= 5; i++) {
-            // empty byte array
-            const workBA = new ByteArray(2);
-            // copy bytes into work area
-            bytes.readBytes(workBA, 0, 2);
-            // 
-            result["layer"+i] = workBA.toString("binary");
+            result["layer"+i] = bytes.readBoolean();
         }
 
         return result;
@@ -113,6 +107,10 @@ export default class Forge {
         if(!condition) {
             throw(message);
         }
+    }
+
+    public isBoolean(variable: boolean): boolean {
+      return typeof variable === "boolean";
     }
 
     /** 

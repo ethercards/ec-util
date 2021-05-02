@@ -11,7 +11,7 @@ const forge = new Forge();
 //
 // user sends 2551 to forge and selects layers to be moved
 
-const result = forge.encodeLayerTransfer(2550, 2551, "41", "03", "83", "d4", "06");
+const result = forge.encodeLayerTransfer(2550, 2551, false, false, false, true, true);
 console.log("result:", result);
 
 // result: 0x0001000109f609f734313033383364343036
@@ -24,9 +24,9 @@ console.log("decoded:", decoded);
 //     method_id: 1,
 //     dstTokenId: 2550,
 //     srcTokenId: 2551,
-//     layer1: '41',
-//     layer2: '03',
-//     layer3: '83',
-//     layer4: 'd4',
-//     layer5: '06'
+//     layer1: false,
+//     layer2: false,
+//     layer3: false,
+//     layer4: true,
+//     layer5: true
 // }
