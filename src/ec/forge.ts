@@ -45,11 +45,11 @@ export default class Forge {
 
         const bytes = new ByteArray(Buffer.alloc(2 + 2));
 
-        // add version - 2 bytes - uint16
-        bytes.writeUnsignedShort(this.version);
+        // add version - 1 byte - uint8
+        bytes.writeByte(this.version);
 
-        // add method id - 2 bytes - uint16
-        bytes.writeUnsignedShort(this.USER_ACTION_LAYER_TRANSFER);
+        // add method id - 1 byte - uint8
+        bytes.writeByte(this.USER_ACTION_LAYER_TRANSFER);
         
         // dstTokenId - 2 bytes - uint16
         bytes.writeUnsignedShort(dstTokenId);
@@ -85,8 +85,8 @@ export default class Forge {
         );
 
         const result = {
-            version: bytes.readUnsignedShort(),
-            method_id: bytes.readUnsignedShort(),
+            version: bytes.readByte(),
+            method_id: bytes.readByte(),
             dstTokenId: bytes.readUnsignedShort(),
             srcTokenId: bytes.readUnsignedShort(),
             layer1: false,

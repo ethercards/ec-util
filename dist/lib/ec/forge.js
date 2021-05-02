@@ -37,10 +37,10 @@ var Forge = /** @class */ (function () {
         this.requires(this.isBoolean(layer4), "Layer4 length must be boolean");
         this.requires(this.isBoolean(layer5), "Layer5 length must be boolean");
         var bytes = new ByteArray_1.default(Buffer.alloc(2 + 2));
-        // add version - 2 bytes - uint16
-        bytes.writeUnsignedShort(this.version);
-        // add method id - 2 bytes - uint16
-        bytes.writeUnsignedShort(this.USER_ACTION_LAYER_TRANSFER);
+        // add version - 1 byte - uint8
+        bytes.writeByte(this.version);
+        // add method id - 1 byte - uint8
+        bytes.writeByte(this.USER_ACTION_LAYER_TRANSFER);
         // dstTokenId - 2 bytes - uint16
         bytes.writeUnsignedShort(dstTokenId);
         // optional.. since we already know the source when received by the contract.. but hey.
@@ -66,8 +66,8 @@ var Forge = /** @class */ (function () {
         // convert the result to a byte array so we can process it
         var bytes = new ByteArray_1.default(Buffer.from(cleanBinary, "hex"));
         var result = {
-            version: bytes.readUnsignedShort(),
-            method_id: bytes.readUnsignedShort(),
+            version: bytes.readByte(),
+            method_id: bytes.readByte(),
             dstTokenId: bytes.readUnsignedShort(),
             srcTokenId: bytes.readUnsignedShort(),
             layer1: false,
