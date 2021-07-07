@@ -8,7 +8,7 @@
     "build": "tsc -p . && npm run build:dec && npm run build:js",
     "build:js": "gulp build",
     "build:dec": "tsc --declaration true --emitDeclarationOnly --declarationDir dist/types",
-    "test": "tsc -p . && ts-node test/test.ts"
+    "test": "ts-node test/test.ts"
   },
   "files": [
     "index.js",
@@ -42,6 +42,7 @@
     "bitwise": "^2.1.0",
     "browserify": "^16.2.3",
     "chai": "^4.3.4",
+    "color-string": "^1.5.5",
     "dateformat": "^3.0.3",
     "gulp": "^4.0.2",
     "gulp-sourcemaps": "^2.6.4",
@@ -69,6 +70,11 @@
   },
   "dependencies": {
     "@ethersproject/bignumber": "^5.4.0",
-    "@ethersproject/bytes": "^5.4.0"
+    "@ethersproject/bytes": "^5.4.0",
+    "braces": ">=2.3.1",
+    "glob-parent": ">=5.1.2",
+    "is-svg": ">=4.2.2",
+    "js-yaml": ">=3.13.1",
+    "lodash.template": ">=4.5.0"
   }
 }

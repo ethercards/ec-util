@@ -7,11 +7,13 @@ export default class BitArray {
 
     public length:number;
     public backingArray: Uint8Array;
+    public offset:number;
 
-    constructor(length: number) {
+    constructor(length: number, offset: number = 100) {
         this.length = Math.ceil(length/8);
         this.backingArray = Uint8Array.from({length: this.length}, ()=>0)
         this.length = this.length * 8;
+        this.offset = offset;
     }
 
     public set(array: any ) {
@@ -52,7 +54,25 @@ export default class BitArray {
         return bn.toHexString();
     }
 
-    public toArray() {
+    public toEnabled(): any {
+        return this.toKeyValue(true);
+    }
+
+    public toKeyValue(onlyTrue:boolean = false): any {
+        const retVal = {};
+            this.forEach(( value: boolean, index: number ) => {
+                if(onlyTrue) {
+                    if(value) {
+                        retVal[index + this.offset] = value;
+                    }
+                } else {
+                    retVal[index + this.offset] = value;
+                }
+            });
+        return retVal;
+    }
+
+    public toArray(): any {
         const retVal: Array<any> = [];
             this.backingArray.forEach(uint8 => {
                 retVal.push(uint8)
@@ -60,7 +80,7 @@ export default class BitArray {
         return retVal;
     }
 
-    public toBinaryString(spacer: string = ' ') {
+    public toBinaryString(spacer: string = ' '): any {
         let results: Array<string> = [];
         this.backingArray.forEach(uint8 => {
             let result: string = "";

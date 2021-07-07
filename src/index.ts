@@ -7,9 +7,9 @@
  */
 
 import Forge from "./ec/forge";
+import Registry from "./ec/registry"
 import ByteArray from "./utils/ByteArray";
 import BitArray from "./utils/BitArray";
-
 
 declare global {
     interface Window { ecutil: any; }
@@ -20,10 +20,12 @@ if (typeof window !== 'undefined') {
     window.ecutil.Forge = Forge;
     window.ecutil.ByteArray = ByteArray;
     window.ecutil.BitArray = BitArray;
+    window.ecutil.Registry = Registry;
 }
 
 export {
     Forge,
+    Registry,
     ByteArray,
     BitArray
 };

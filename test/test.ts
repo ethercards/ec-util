@@ -48,9 +48,11 @@ const data = [
     1, 1, 1, 0, 0, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 1,
 ];
-let traitData = new BitArray(data.length);
+let traitData = new BitArray(64);   // we don't store data for traits that don't exist on said token.. so expect to read only available
 traitData.set(data);
 
-console.log( "Array ->  ", traitData.toArray() );
-console.log( "Hex ->    ", traitData.toHexString() );
-console.log( "Binary -> ", traitData.toBinaryString() );
+console.log( "Array ->       ", traitData.toArray() );
+console.log( "toKeyValue ->  ", traitData.toKeyValue() );
+console.log( "toEnabled ->   ", traitData.toEnabled() );
+console.log( "Hex ->         ", traitData.toHexString() );
+console.log( "Binary ->      ", traitData.toBinaryString() );
