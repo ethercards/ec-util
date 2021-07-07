@@ -4,7 +4,7 @@
  * @package     ECUtil
  * @author      Micky Socaci <micky@ether.cards>
  * @license     MIT
- */
+*/
 
 export default class ByteArray {
 
@@ -199,7 +199,7 @@ export default class ByteArray {
 		this.writePosition += 1;
 	}
 
-	public writeBytes(buffer: Buffer | ByteArray, offset: number = 0, length: number = 0): void {
+	public writeBytes(buffer: ByteArray, offset: number = 0, length: number = 0): void {
 		if (offset < 0 || length < 0) {
 			throw new Error("Offset/Length can't be less than 0");
 		}
@@ -217,8 +217,13 @@ export default class ByteArray {
 		}
 
 		if (length > 0) {
-			for (let i = offset; i < length; i++) {
-				this.writeByte(buffer[i]);
+			for (let i: number = offset; i < length; i++) {
+
+				buffer.reset();
+				buffer.advanceReadPositionBy(offset);
+				for (let i = offset; i < length; i++) {
+					this.writeByte(buffer.readByte());
+				}
 			}
 		}
 	}
@@ -337,7 +342,7 @@ export default class ByteArray {
 		this.writeMultiByte(value);
 	}
 
-	public copyBytes(buffer: Buffer | ByteArray, offset: number = 0, length: number = 0): void {
+	public copyBytes(buffer: ByteArray, offset: number = 0, length: number = 0): void {
 		if (offset < 0 || length < 0) {
 			throw new Error("Offset/Length can't be less than 0");
 		}
@@ -355,8 +360,10 @@ export default class ByteArray {
 		}
 
 		if (length > 0) {
+			buffer.reset();
+			buffer.advanceReadPositionBy(offset);
 			for (let i = offset; i < length; i++) {
-				this.writeUnsignedByte(buffer[i]);
+				this.writeByte(buffer.readByte());
 			}
 		}
 	}

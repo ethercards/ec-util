@@ -5,7 +5,7 @@
  * @package     ECUtil
  * @author      Micky Socaci <micky@ether.cards>
  * @license     MIT
- */
+*/
 Object.defineProperty(exports, "__esModule", { value: true });
 var ByteArray = /** @class */ (function () {
     function ByteArray(buffer) {
@@ -196,7 +196,11 @@ var ByteArray = /** @class */ (function () {
         }
         if (length > 0) {
             for (var i = offset; i < length; i++) {
-                this.writeByte(buffer[i]);
+                buffer.reset();
+                buffer.advanceReadPositionBy(offset);
+                for (var i_1 = offset; i_1 < length; i_1++) {
+                    this.writeByte(buffer.readByte());
+                }
             }
         }
     };
@@ -303,8 +307,10 @@ var ByteArray = /** @class */ (function () {
             throw new RangeError("Length can't be greater than the buffer length");
         }
         if (length > 0) {
+            buffer.reset();
+            buffer.advanceReadPositionBy(offset);
             for (var i = offset; i < length; i++) {
-                this.writeUnsignedByte(buffer[i]);
+                this.writeByte(buffer.readByte());
             }
         }
     };

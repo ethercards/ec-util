@@ -8,6 +8,8 @@
 
 import Forge from "./ec/forge";
 import ByteArray from "./utils/ByteArray";
+import BitArray from "./utils/BitArray";
+
 
 declare global {
     interface Window { ecutil: any; }
@@ -17,9 +19,11 @@ if (typeof window !== 'undefined') {
     window.ecutil = window.ecutil || {};
     window.ecutil.Forge = Forge;
     window.ecutil.ByteArray = ByteArray;
+    window.ecutil.BitArray = BitArray;
 }
 
 export {
     Forge,
     ByteArray,
+    BitArray
 };

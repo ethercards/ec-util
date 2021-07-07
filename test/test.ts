@@ -1,5 +1,8 @@
 import { Forge } from '../src';
 
+import { BitArray } from '../src';
+
+
 const forge = new Forge();
 
 // example 2550 and 2551
@@ -30,3 +33,24 @@ console.log("decoded:", decoded);
 //     layer4: true,
 //     layer5: true
 // }
+
+
+const result2 = forge.encodeLayerTransfer(11, 20, true, true, true, true, true);
+console.log("result2:", result2);
+
+
+console.log( "Trait Data Encoding / Decoding");
+
+const data = [
+    0, 0, 0, 0, 0, 0, 0, 0,
+    1, 0, 0, 0, 0, 0, 0, 1,
+    1, 1, 0, 0, 0, 0, 1, 1,
+    1, 1, 1, 0, 0, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1,
+];
+let traitData = new BitArray(data.length);
+traitData.set(data);
+
+console.log( "Array ->  ", traitData.toArray() );
+console.log( "Hex ->    ", traitData.toHexString() );
+console.log( "Binary -> ", traitData.toBinaryString() );
