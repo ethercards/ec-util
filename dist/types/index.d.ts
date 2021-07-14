@@ -1,4 +1,5 @@
 import Forge from "./ec/forge";
+import Registry from "./ec/registry";
 import ByteArray from "./utils/ByteArray";
 import BitArray from "./utils/BitArray";
 declare global {
@@ -6,4 +7,4 @@ declare global {
         ecutil: any;
     }
 }
-export { Forge, ByteArray, BitArray };
+export { Forge, Registry, ByteArray, BitArray };
