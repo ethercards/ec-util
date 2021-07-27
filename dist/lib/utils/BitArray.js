@@ -7,10 +7,12 @@ var bitwise_1 = __importDefault(require("bitwise"));
 var bignumber_1 = require("@ethersproject/bignumber");
 var bytes_1 = require("@ethersproject/bytes");
 var BitArray = /** @class */ (function () {
-    function BitArray(length) {
+    function BitArray(length, offset) {
+        if (offset === void 0) { offset = 100; }
         this.length = Math.ceil(length / 8);
         this.backingArray = Uint8Array.from({ length: this.length }, function () { return 0; });
         this.length = this.length * 8;
+        this.offset = offset;
     }
     BitArray.prototype.set = function (array) {
         for (var i = 0; i < array.length; i++) {
@@ -40,9 +42,60 @@ var BitArray = /** @class */ (function () {
             }
         });
     };
-    BitArray.prototype.toHexString = function () {
+    BitArray.prototype.toHexString = function (keepZeros) {
+        var startZeros = 0;
+        var max = this.backingArray.length;
+        for (var i = 0; i < max; i++) {
+            if (this.backingArray[i] === 0) {
+                startZeros++;
+            }
+            else {
+                i = max;
+            }
+        }
         var bn = bignumber_1.BigNumber.from(this.backingArray);
-        return bn.toHexString();
+        var hexString = bn.toHexString();
+        if (startZeros === 0) {
+            return hexString;
+        }
+        else if (bn.eq(0)) {
+            if (!keepZeros) {
+                return "0x00";
+            }
+            else {
+                var finalString_1 = "0x";
+                for (var i = 0; i < startZeros; i++) {
+                    finalString_1 += "00";
+                }
+                return finalString_1;
+            }
+        }
+        hexString = hexString.replace("0x", "");
+        var finalString = "0x";
+        for (var i = 0; i < startZeros; i++) {
+            finalString += "00";
+        }
+        finalString += hexString;
+        return finalString;
+    };
+    BitArray.prototype.toEnabled = function () {
+        return this.toKeyValue(true);
+    };
+    BitArray.prototype.toKeyValue = function (onlyTrue) {
+        var _this = this;
+        if (onlyTrue === void 0) { onlyTrue = false; }
+        var retVal = {};
+        this.forEach(function (value, index) {
+            if (onlyTrue) {
+                if (value) {
+                    retVal[index + _this.offset] = value;
+                }
+            }
+            else {
+                retVal[index + _this.offset] = value;
+            }
+        });
+        return retVal;
     };
     BitArray.prototype.toArray = function () {
         var retVal = [];

@@ -56,3 +56,10 @@ console.log( "toKeyValue ->  ", traitData.toKeyValue() );
 console.log( "toEnabled ->   ", traitData.toEnabled() );
 console.log( "Hex ->         ", traitData.toHexString() );
 console.log( "Binary ->      ", traitData.toBinaryString() );
+
+
+// const contractData = await ECRegistry.getData(1);
+// let traits = new BitArray(contractData);
+// Object.keys(traits.toEnabled()).forEach((key: any, count: number) => {
+//     // key is trait id .. and if present it means it's available on said token    
+// });

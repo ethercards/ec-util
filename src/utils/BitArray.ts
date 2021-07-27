@@ -1,4 +1,3 @@
-
 import bitwise from 'bitwise'
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify } from "@ethersproject/bytes";
@@ -49,9 +48,40 @@ export default class BitArray {
         })
     }
 
-    public toHexString() {
+    public toHexString(keepZeros?: boolean) {
+        let startZeros = 0;
+        const max = this.backingArray.length;
+        for(let i = 0; i < max; i++) {
+            if(this.backingArray[i] === 0) {
+                startZeros++;
+            } else {
+                i = max;
+            }
+        }
         const bn = BigNumber.from(this.backingArray);
-        return bn.toHexString();
+        let hexString = bn.toHexString();
+        if(startZeros === 0) {
+            return hexString;
+        } else if (bn.eq(0)) {
+            if(!keepZeros) {
+                return "0x00";
+            } else {
+                let finalString = "0x";
+                for(let i = 0; i < startZeros; i++) {
+                    finalString+= "00";
+                }
+                return finalString;
+            }
+        }
+
+        hexString = hexString.replace("0x", "");
+        
+        let finalString = "0x";
+        for(let i = 0; i < startZeros; i++) {
+            finalString+= "00";
+        }
+        finalString+= hexString;
+        return finalString;
     }
 
     public toEnabled(): any {
@@ -72,7 +102,7 @@ export default class BitArray {
         return retVal;
     }
 
-    public toArray(): any {
+    public toArray() {
         const retVal: Array<any> = [];
             this.backingArray.forEach(uint8 => {
                 retVal.push(uint8)
@@ -80,7 +110,7 @@ export default class BitArray {
         return retVal;
     }
 
-    public toBinaryString(spacer: string = ' '): any {
+    public toBinaryString(spacer: string = ' ') {
         let results: Array<string> = [];
         this.backingArray.forEach(uint8 => {
             let result: string = "";
