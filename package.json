@@ -39,7 +39,6 @@
     "babel-core": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babelify": "^8.0.0",
-    "bitwise": "^2.1.0",
     "browserify": "^16.2.3",
     "chai": "^4.3.4",
     "color-string": "^1.5.5",
@@ -71,6 +70,7 @@
   "dependencies": {
     "@ethersproject/bignumber": "^5.4.0",
     "@ethersproject/bytes": "^5.4.0",
+    "bitwise": "^2.1.0",
     "braces": ">=2.3.1",
     "diff": "^5.0.0",
     "glob-parent": ">=5.1.2",
