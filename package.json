@@ -22,7 +22,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ethercards/ec-util"
+    "url": "git+https://github.com/ethercards/ec-util.git"
   },
   "keywords": [
     "ec-util"
@@ -77,5 +77,8 @@
     "is-svg": ">=4.2.2",
     "js-yaml": ">=3.13.1",
     "lodash.template": ">=4.5.0"
+  },
+  "directories": {
+    "test": "test"
   }
 }
