@@ -123,9 +123,9 @@ export default class BitArray {
         return results.join(spacer);
     }
 
-    public static fromHexString(data: string) {
+    public static fromHexString(data: string, offset?: number) {
         const Uint8Array = arrayify(data);
-        const BA = new BitArray(Uint8Array.length * 8);
+        const BA = new BitArray(Uint8Array.length * 8, offset);
         for(let i = 0; i < Uint8Array.length; i++) {
 
             for(let j = 0; j < 8 ; j++) {
@@ -139,12 +139,12 @@ export default class BitArray {
         return BA;
     }
 
-    public static fromUint8Array(data: Array<any>) {
+    public static fromUint8Array(data: Array<any>, offset?: number) {
         if(data.length === 0) {
             data = [0];
         }
         const Uint8Array = arrayify(data);
-        const BA = new BitArray(Uint8Array.length * 8);
+        const BA = new BitArray(Uint8Array.length * 8, offset);
         for(let i = 0; i < Uint8Array.length; i++) {
 
             for(let j = 0; j < 8 ; j++) {

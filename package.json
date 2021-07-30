@@ -1,5 +1,5 @@
 {
-  "name": "ec-util",
+  "name": "@ethercards/ec-util",
   "version": "1.0.0",
   "description": "EtherCards Utils",
   "main": "dist/lib/index.js",

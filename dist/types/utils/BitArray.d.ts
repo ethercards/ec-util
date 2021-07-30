@@ -14,6 +14,6 @@ export default class BitArray {
     toKeyValue(onlyTrue?: boolean): any;
     toArray(): any[];
     toBinaryString(spacer?: string): string;
-    static fromHexString(data: string): BitArray;
-    static fromUint8Array(data: Array<any>): BitArray;
+    static fromHexString(data: string, offset?: number): BitArray;
+    static fromUint8Array(data: Array<any>, offset?: number): BitArray;
 }
