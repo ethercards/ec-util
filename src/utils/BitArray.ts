@@ -8,7 +8,7 @@ export default class BitArray {
     public backingArray: Uint8Array;
     public offset:number;
 
-    constructor(length: number, offset: number = 100) {
+    constructor(length: number, offset: number = 0) {
         this.length = Math.ceil(length/8);
         this.backingArray = Uint8Array.from({length: this.length}, ()=>0)
         this.length = this.length * 8;

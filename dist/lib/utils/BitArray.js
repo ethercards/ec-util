@@ -8,7 +8,7 @@ var bignumber_1 = require("@ethersproject/bignumber");
 var bytes_1 = require("@ethersproject/bytes");
 var BitArray = /** @class */ (function () {
     function BitArray(length, offset) {
-        if (offset === void 0) { offset = 100; }
+        if (offset === void 0) { offset = 0; }
         this.length = Math.ceil(length / 8);
         this.backingArray = Uint8Array.from({ length: this.length }, function () { return 0; });
         this.length = this.length * 8;
