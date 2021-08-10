@@ -8,7 +8,7 @@ export default class Registry {
     /**
      * Decode Trait Data
      * @param Uint8Array
-     * @returns array
+     * @returns array of ids
      */
     decodeTraits(Uint8Array: any[]): any[];
     /**

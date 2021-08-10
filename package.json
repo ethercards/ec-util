@@ -1,5 +1,5 @@
 {
-  "name": "ec-util",
+  "name": "@ethercards/ec-util",
   "version": "1.0.1",
   "description": "EtherCards Utils",
   "main": "dist/lib/index.js",
@@ -8,7 +8,8 @@
     "build": "tsc -p . && npm run build:dec && npm run build:js",
     "build:js": "gulp build",
     "build:dec": "tsc --declaration true --emitDeclarationOnly --declarationDir dist/types",
-    "test": "ts-node test/test.ts"
+    "test": "ts-node test/test.ts",
+    "publish": "npm run build && npm publish --access public"
   },
   "files": [
     "index.js",

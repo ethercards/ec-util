@@ -24,11 +24,16 @@ var Registry = /** @class */ (function () {
     /**
      * Decode Trait Data
      * @param Uint8Array
-     * @returns array
+     * @returns array of ids
      */
     Registry.prototype.decodeTraits = function (Uint8Array) {
         var traits = BitArray_1.default.fromUint8Array(Uint8Array);
-        return traits.toEnabled();
+        var enabled = traits.toEnabled();
+        var retval = [];
+        Object.keys(enabled).forEach(function (key) {
+            retval.push(key);
+        });
+        return retval;
     };
     /**
      * Decode Trait Data

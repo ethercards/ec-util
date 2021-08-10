@@ -22,11 +22,16 @@ export default class Registry {
     /** 
      * Decode Trait Data
      * @param Uint8Array
-     * @returns array
+     * @returns array of ids
      */
     public decodeTraits(Uint8Array: any[]): any[] {
         const traits = BitArray.fromUint8Array(Uint8Array);
-        return traits.toEnabled();
+        const enabled = traits.toEnabled();
+        const retval = [];
+        Object.keys(enabled).forEach((key)=>{
+            retval.push(key);
+        })
+        return retval;
     }
 
     /** 
