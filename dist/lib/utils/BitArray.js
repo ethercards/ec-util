@@ -117,7 +117,7 @@ var BitArray = /** @class */ (function () {
         return results.join(spacer);
     };
     BitArray.fromHexString = function (data, offset) {
-        var Uint8Array = bytes_1.arrayify(data);
+        var Uint8Array = (0, bytes_1.arrayify)(data);
         var BA = new BitArray(Uint8Array.length * 8, offset);
         for (var i = 0; i < Uint8Array.length; i++) {
             for (var j = 0; j < 8; j++) {
@@ -134,7 +134,7 @@ var BitArray = /** @class */ (function () {
         if (data.length === 0) {
             data = [0];
         }
-        var Uint8Array = bytes_1.arrayify(data);
+        var Uint8Array = (0, bytes_1.arrayify)(data);
         var BA = new BitArray(Uint8Array.length * 8, offset);
         for (var i = 0; i < Uint8Array.length; i++) {
             for (var j = 0; j < 8; j++) {
