@@ -70,9 +70,16 @@ export default class TokenSpecs {
 
                     }
 
-                    if(!LayerVariants[sidej].layers[layery].values.includes(DNAVariantValue)) {
-                        LayerVariants[sidej].layers[layery].values.push(DNAVariantValue);
+                    if (!LayerVariants[sidej].layers[layery].values.some((e: any) => e.id === DNAVariantValue)) {
+                        LayerVariants[sidej].layers[layery].values.push({
+                            "id": DNAVariantValue,
+                            "label": ""
+                        });
                     }
+
+                    // if(!LayerVariants[sidej].layers[layery].values.includes(DNAVariantValue)) {
+
+                    // }
                 }
             }
             // sides
@@ -86,11 +93,11 @@ export default class TokenSpecs {
             // each layer
             for(let y = 0; y < LayerVariants[i].layers.length; y++) {
                 // sort ASC
-                LayerVariants[i].layers[y].values = LayerVariants[i].layers[y].values.sort(function (a: number, b: number): number {  return a - b;  });
+                LayerVariants[i].layers[y].values = LayerVariants[i].layers[y].values.sort(function (a: any, b: any): number {  return a.id - b.id;  });
 
                 // take max value ( last in array )
-                const minVal = LayerVariants[i].layers[y].values[LayerVariants[i].layers[y].values[0]];
-                const maxVal = LayerVariants[i].layers[y].values[LayerVariants[i].layers[y].values.length-1];
+                const minVal = LayerVariants[i].layers[y].values[0].id;
+                const maxVal = LayerVariants[i].layers[y].values[LayerVariants[i].layers[y].values.length-1].id;
 
                 // set min / max
                 LayerVariants[i].layers[y].minVal = minVal;

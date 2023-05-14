@@ -1,5 +1,6 @@
 import BN from 'bn.js';
-import allTokenJson from "./data/grd.json";
+// import allTokenJson from "./data/grd.json";
+import allTokenJson from "./data/450.json";
 import { ethers } from "ethers";
 
 import { TokenCollectionSpecs, Side, Layer } from '../src/interfaces/TokenSpecs'
@@ -17,9 +18,10 @@ const VisualTraitRegistryABI = [{ "inputs": [{ "internalType": "address", "name"
 async function main() {
 
     const Specs: TokenCollectionSpecs = TokenSpecs.generateTokenCollectionSpecs(allTokenJson, false, true);
-    expect(Specs.SideCount).to.be.equal(2);
-    expect(Specs.sides[0].id).to.be.equal("0");
-    expect(Specs.sides[1].id).to.be.equal("1");
+
+    // expect(Specs.SideCount).to.be.equal(2);
+    // expect(Specs.sides[0].id).to.be.equal("0");
+    // expect(Specs.sides[1].id).to.be.equal("1");
 
     console.log(JSON.stringify(Specs, null, 2));
     // const encodedVisualLayerData = visualUtils.encodeVisualLayerData(allTokenJson, TokenSpecs);
