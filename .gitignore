@@ -9,3 +9,9 @@ scripts/TestRPCData/*
 !scripts/TestRPCData/.gitkeep 
 tmp/
 data/
+.env
+.env_test
+.env_micky
+.mainnet
+.proxy
+.secret
