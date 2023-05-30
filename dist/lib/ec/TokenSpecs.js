@@ -17,7 +17,7 @@ var TokenSpecs = /** @class */ (function () {
     TokenSpecs.generateTokenCollectionSpecs = function (tokenJson, dnaInHex, keepLayerValues) {
         if (dnaInHex === void 0) { dnaInHex = false; }
         if (keepLayerValues === void 0) { keepLayerValues = false; }
-        if (tokenJson[0] === null) {
+        if (tokenJson[0] === null || typeof tokenJson[0] === "undefined") {
             tokenJson.shift();
         }
         var specs = {
