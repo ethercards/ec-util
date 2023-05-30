@@ -21,12 +21,10 @@ export default class VisualTraits {
         } else if(typeof _howManyTokens === "number") {
             tokensToProcess = _howManyTokens;
         } else {
-            throw new Error("Invalid _howManyTokens value: (" + _howManyTokens + ")");
+            throw new Error("Invalid _howManyTokens value: (" + _howManyTokens + ") type = " + typeof _howManyTokens );
         }
 
-        if( tokenJson[0]=== null) {
-            tokenJson.shift();
-        }
+
        
         const outputs: any = [];
         // for each side create a new int array
@@ -37,36 +35,37 @@ export default class VisualTraits {
         // Each token in array
         for(let i = 0; i < tokensToProcess; i++) {
             
-            const token = tokenJson[i];
-            let value = new BN(0);
-            let shift = 0;
+            if( tokenJson[i] !== "undefined") {
+                const token = tokenJson[i];
+                let value = new BN(0);
+                let shift = 0;
 
-            // Each side of the token
-            for(let sidej = 0; sidej < token.sides.length; sidej++) {
+                // Each side of the token
+                for(let sidej = 0; sidej < token.sides.length; sidej++) {
 
-                // split string by 2 chars ( hex )
-                const splitDNA = Tools.stringSplitter(token.sides[sidej].dna, 2);
+                    // split string by 2 chars ( hex )
+                    const splitDNA = Tools.stringSplitter(token.sides[sidej].dna, 2);
 
-                // console.log("splitDNA", splitDNA);
-                for(let layery = 0; layery < splitDNA.length; layery++) {
+                    // console.log("splitDNA", splitDNA);
+                    for(let layery = 0; layery < splitDNA.length; layery++) {
 
-                    let DNAVariantValue: BN;
-                    if(tokenSpecs.SideDNAEncodingIsHEX) {
-                        // get DNA Variant value and add 0x so js can properly convert hex to number
-                        DNAVariantValue = new BN(Number("0x"+splitDNA[layery]));
-                    } else {
-                        
-                        DNAVariantValue = new BN(parseInt( splitDNA[layery] )); 
+                        let DNAVariantValue: BN;
+                        if(tokenSpecs.SideDNAEncodingIsHEX) {
+                            // get DNA Variant value and add 0x so js can properly convert hex to number
+                            DNAVariantValue = new BN(Number("0x"+splitDNA[layery]));
+                        } else {
+                            DNAVariantValue = new BN(parseInt( splitDNA[layery] )); 
+                        }
+                        // encoder bitlength
+                        const bitlength = tokenSpecs.sides[sidej].layers[layery].bitlength;
+                        const shiftedValue = DNAVariantValue.shln(shift);
+                        shift+= bitlength;
+                        value = value.add(shiftedValue);
                     }
-                    // encoder bitlength
-                    const bitlength = tokenSpecs.sides[sidej].layers[layery].bitlength;
-                    const shiftedValue = DNAVariantValue.shln(shift);
-                    shift+= bitlength;
-                    value = value.add(shiftedValue);
+                    Tools.AddToIntArray(outputs[sidej], value);
                 }
-                Tools.AddToIntArray(outputs[sidej], value);
+                // sides
             }
-            // sides
         }
 
         const HEXoutputs: any = [];

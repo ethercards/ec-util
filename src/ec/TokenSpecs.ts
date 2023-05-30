@@ -14,7 +14,7 @@ export default class TokenSpecs {
 
     public static generateTokenCollectionSpecs(tokenJson: any, dnaInHex: boolean = false, keepLayerValues = false): TokenCollectionSpecs {
         
-        if( tokenJson[0]=== null) {
+        if( tokenJson[0]=== null || typeof tokenJson[0] === "undefined") {
             tokenJson.shift();
         }
 
@@ -76,10 +76,7 @@ export default class TokenSpecs {
                             "label": ""
                         });
                     }
-
-                    // if(!LayerVariants[sidej].layers[layery].values.includes(DNAVariantValue)) {
-
-                    // }
+   
                 }
             }
             // sides

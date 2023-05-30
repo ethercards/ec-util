@@ -1,7 +1,9 @@
 import BN from 'bn.js';
 // import allTokenJson from "./data/grd.json";
 import allTokenJson from "./data/450.json";
-import { ethers } from "ethers";
+import tokenABI from "./abi/token.json";
+import { BigNumber, ethers } from "ethers";
+import axios from 'axios';
 
 import { TokenCollectionSpecs, Side, Layer } from '../src/interfaces/TokenSpecs'
 import { IntArray } from '../src/interfaces/IntArray'
@@ -9,6 +11,14 @@ import Tools from '../src/utils/Tools'
 import TokenSpecs from '../src/ec/TokenSpecs'
 import VisualTraits from '../src/ec/VisualTraits'
 import { expect } from 'chai';
+import dotenv from "dotenv";
+// make sure to set your .env file
+const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env'
+console.log("loading envFile:", envFile)
+dotenv.config({ path: envFile })
+
+const INFURA_ID = process.env.INFURA_API_KEY;
+
 
 const VisualTraitRegistryABI = [{ "inputs": [{ "internalType": "address", "name": "_registry", "type": "address" }, { "internalType": "uint16", "name": "_traitId", "type": "uint16" }], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint8", "name": "traitSet", "type": "uint8" }, { "indexed": false, "internalType": "uint16", "name": "tokenId", "type": "uint16" }, { "indexed": false, "internalType": "uint256", "name": "newData", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "oldData", "type": "uint256" }], "name": "TraitsUpdated", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint8", "name": "traitSet", "type": "uint8" }, { "indexed": false, "internalType": "uint256", "name": "nwordPos", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "answer", "type": "uint256" }], "name": "WordFound", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint8", "name": "traitSet", "type": "uint8" }, { "indexed": false, "internalType": "uint256", "name": "wordPos", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "answer", "type": "uint256" }], "name": "WordUpdated", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint8", "name": "_side", "type": "uint8" }, { "indexed": true, "internalType": "uint16", "name": "_tokenId", "type": "uint16" }, { "indexed": false, "internalType": "uint256", "name": "_newData", "type": "uint256" }, { "indexed": false, "internalType": "uint8", "name": "dataLength", "type": "uint8" }], "name": "updateTraitEvent", "type": "event" }, { "inputs": [], "name": "CONTRACT_ADMIN", "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "ECRegistry", "outputs": [{ "internalType": "contract IECRegistry", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "traitSet", "type": "uint8" }, { "internalType": "uint256[]", "name": "traitData", "type": "uint256[]" }, { "internalType": "uint16", "name": "count", "type": "uint16" }], "name": "addMoreTraitsByWordStream", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "string", "name": "traitSetName", "type": "string" }, { "components": [{ "internalType": "uint8", "name": "len", "type": "uint8" }, { "internalType": "string", "name": "name", "type": "string" }], "internalType": "struct VisualTraitRegistry.definition[]", "name": "traitInfo", "type": "tuple[]" }], "name": "createTraitSet", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "traitSet", "type": "uint8" }, { "internalType": "uint8", "name": "position", "type": "uint8" }, { "internalType": "uint16", "name": "tokenId", "type": "uint16" }], "name": "getIndividualTraitData", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "traitSet", "type": "uint8" }], "name": "getTraitNames", "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint16", "name": "tokenId", "type": "uint16" }, { "internalType": "uint8", "name": "sideId", "type": "uint8" }, { "internalType": "uint8", "name": "layerId", "type": "uint8" }], "name": "getValue", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint16", "name": "tokenId", "type": "uint16" }, { "internalType": "uint8", "name": "sideId", "type": "uint8" }], "name": "getValues", "outputs": [{ "internalType": "uint8[]", "name": "response", "type": "uint8[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint16[]", "name": "tokenIds", "type": "uint16[]" }], "name": "getValues", "outputs": [{ "internalType": "uint8[][][]", "name": "response", "type": "uint8[][][]" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint16", "name": "tokenId", "type": "uint16" }], "name": "getValues", "outputs": [{ "internalType": "uint8[][]", "name": "response", "type": "uint8[][]" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "traitSet", "type": "uint8" }, { "internalType": "uint16", "name": "tokenId", "type": "uint16" }], "name": "getWholeTraitData", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }, { "internalType": "uint8", "name": "", "type": "uint8" }, { "internalType": "uint256", "name": "", "type": "uint256" }], "name": "layerPointers", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "name": "numberOfTokens", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "numberOfTraitSets", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "name": "numberOfTraits", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "traitSet", "type": "uint8" }, { "internalType": "uint8", "name": "position", "type": "uint8" }, { "internalType": "uint16", "name": "tokenId", "type": "uint16" }, { "internalType": "uint256", "name": "newData", "type": "uint256" }], "name": "setIndividualTraitData", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "traitSet", "type": "uint8" }, { "internalType": "uint256[]", "name": "traitData", "type": "uint256[]" }, { "internalType": "uint16", "name": "count", "type": "uint16" }], "name": "setTraitsByWordStream", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "traitSet", "type": "uint8" }, { "internalType": "uint16", "name": "tokenId", "type": "uint16" }, { "internalType": "uint256", "name": "newData", "type": "uint256" }], "name": "setWholeTraitData", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "traitId", "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "name": "traitInfoLength", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "name": "traitSetNames", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }, { "internalType": "uint16", "name": "", "type": "uint16" }], "name": "visualTraitData", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }, { "internalType": "string", "name": "", "type": "string" }], "name": "visualTraitPositions", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }, { "internalType": "uint8", "name": "", "type": "uint8" }], "name": "visualTraits", "outputs": [{ "internalType": "uint8", "name": "start", "type": "uint8" }, { "internalType": "uint8", "name": "len", "type": "uint8" }, { "internalType": "string", "name": "name", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "name": "wordCount", "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }], "stateMutability": "view", "type": "function" }];
 
@@ -22,13 +32,91 @@ async function main() {
     // expect(Specs.SideCount).to.be.equal(2);
     // expect(Specs.sides[0].id).to.be.equal("0");
     // expect(Specs.sides[1].id).to.be.equal("1");
-
     console.log(JSON.stringify(Specs, null, 2));
-    // const encodedVisualLayerData = visualUtils.encodeVisualLayerData(allTokenJson, TokenSpecs);
 
-    // let provider = new ethers.providers.JsonRpcProvider("https://polygon-mumbai.infura.io/v3/714442da76574ddeb9549bc967e3c4e0");
-    // let pKey = ethers.Wallet.createRandom();
-    // const signer = new ethers.Wallet(pKey, provider);
+    let provider = new ethers.providers.JsonRpcProvider("https://goerli.infura.io/v3/"+INFURA_ID);
+    let pKey = ethers.Wallet.createRandom();
+    const signer = new ethers.Wallet(pKey, provider);
+
+    const TokenContract = new ethers.Contract("0x5f4E70899f64aB76B43517463aaE102bDf2F7D02", tokenABI, signer); 
+    const TokenEverything = await TokenContract.tellEverything();
+
+    const [StorableTokenJson, lastRevealedTokenId] = Tools.shiftAndFilterRevealedTokens(allTokenJson, TokenEverything.reveals);
+
+    const visualUtils = new VisualTraits();
+    console.log("origEncodedVisualLayerData");
+    const origEncodedVisualLayerData = visualUtils.encodeVisualLayerData(allTokenJson, Specs, lastRevealedTokenId);
+    console.log("shiftedEncodedVisualLayerData");
+    const shiftedEncodedVisualLayerData = visualUtils.encodeVisualLayerData(StorableTokenJson, Specs, lastRevealedTokenId);
+
+    const sideId = 0;
+    console.log("lastRevealedTokenId", lastRevealedTokenId);
+    console.log(origEncodedVisualLayerData[sideId].Data);
+    console.log(shiftedEncodedVisualLayerData[sideId].Data);
+    
+    const _allMetadataURL = "https://app.dev.galaxis.xyz/450/1/metadata";
+    let metadataAllJson: any = null;
+    const _ipfsAllUrl = `${_allMetadataURL}/all`
+    await axios.get(_ipfsAllUrl).then(res=>{
+        console.log('all.json',`${_allMetadataURL}/all`);
+        if(res && res.status===200){
+            metadataAllJson = res.data;
+        }
+    }).catch(e=>{
+        console.log('all json error',e);
+        metadataAllJson = null;
+    })
+
+    const metadataShiftedEncodedVisualLayerData = visualUtils.encodeVisualLayerData(metadataAllJson, Specs, lastRevealedTokenId);
+    console.log(metadataShiftedEncodedVisualLayerData[sideId].Data);
+
+    console.log("VTR Check: orig", BigNumber.from(origEncodedVisualLayerData[sideId].Data[0].toString()).toString());
+    console.log("VTR Check: int ", BigNumber.from(shiftedEncodedVisualLayerData[sideId].Data[0].toString()).toString());
+    console.log("VTR Check: ext ", BigNumber.from(metadataShiftedEncodedVisualLayerData[sideId].Data[0].toString()).toString());
+
+
+    // console.log("VTR Check: R1", BigNumber.from(origEncodedVisualLayerDataR1[sideId].Data[0].toString()).toString());
+    // console.log("VTR Check: R2", BigNumber.from(origEncodedVisualLayerDataR2[sideId].Data[0].toString()).toString());
+    // console.log("VTR Check: R3", BigNumber.from(origEncodedVisualLayerDataR3[sideId].Data[0].toString()).toString());
+
+    for(let i = 0; i < lastRevealedTokenId; i++) {
+        console.log("tokenId:", i);
+        console.log("original: ", allTokenJson[i].tokenId, allTokenJson[i].image);
+        console.log("shifted:  ", StorableTokenJson[i].tokenId, StorableTokenJson[i].image);
+        console.log("metadata: ", metadataAllJson[i].tokenId, metadataAllJson[i].image);
+    }
+    
+/*
+tokenID: metadata/ 1  has data of id: 11
+tokenID: metadata/ 2  has data of id: 12
+tokenID: metadata/ 3  has data of id: 13
+tokenID: metadata/ 4  has data of id: 14
+tokenID: metadata/ 5  has data of id: 15
+tokenID: metadata/ 6  has data of id: 1
+tokenID: metadata/ 7  has data of id: 2
+tokenID: metadata/ 8  has data of id: 3
+tokenID: metadata/ 9  has data of id: 4
+tokenID: metadata/ 10  has data of id: 5
+tokenID: metadata/ 11  has data of id: 6
+tokenID: metadata/ 12  has data of id: 7
+tokenID: metadata/ 13  has data of id: 8
+tokenID: metadata/ 14  has data of id: 9
+tokenID: metadata/ 15  has data of id: 10
+
+tokenID: metadata/ 16  has data of id: 18
+tokenID: metadata/ 17  has data of id: 16
+tokenID: metadata/ 18  has data of id: 17
+
+tokenID: metadata/ 19  has data of id: 21
+tokenID: metadata/ 20  has data of id: 19
+tokenID: metadata/ 21  has data of id: 20
+StorableTokenJson 0 is null
+lastRevealedTokenId 21
+
+[ '0x52 6e 92 51 46 85 26 45 6a 32 92 29 66 91 72 85 6d 2d 8e 66 52 00' ]
+[ '0x52 6e 6d 51 46 92 92 29 66 91 72 85 6d 2d 8e 66 85 26 45 6a 32 00' ]
+*/
+
 
     // const VisualLayersContract = new ethers.Contract("0x2EdB1c08aF924695cBb6C13ebb74CB423133a9bf", VisualTraitRegistryABI, signer); 
 
