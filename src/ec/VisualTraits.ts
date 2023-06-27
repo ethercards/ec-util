@@ -37,11 +37,13 @@ export default class VisualTraits {
             
             if( tokenJson[i] !== "undefined") {
                 const token = tokenJson[i];
-                let value = new BN(0);
-                let shift = 0;
 
                 // Each side of the token
-                for(let sidej = 0; sidej < token.sides.length; sidej++) {
+                // for(let sidej = 0; sidej < token.sides.length; sidej++) {
+                for(let sidej = 0; sidej < tokenSpecs.SideCount; sidej++) {
+
+                    let value = new BN(0);
+                    let shift = 0;
 
                     // split string by 2 chars ( hex )
                     const splitDNA = Tools.stringSplitter(token.sides[sidej].dna, 2);
@@ -62,7 +64,20 @@ export default class VisualTraits {
                         shift+= bitlength;
                         value = value.add(shiftedValue);
                     }
+
+                    // console.log();
+                    // console.log("Tools.AddToIntArray(outputs[sidej], value); -- START")
+                    // for (let i = 0; i < outputs[sidej].Data.length; i++) {
+                    //     console.log("[o:"+i+"]", outputs[sidej].Data[i].toString(2).padStart(256, '0'));
+                    // }
+                    // console.log("value", value.toString(2).padStart( tokenSpecs.sides[sidej].bitlength, '0'));
+
                     Tools.AddToIntArray(outputs[sidej], value);
+
+                    // for (let i = 0; i < outputs[sidej].Data.length; i++) {
+                    //     console.log("[o:"+i+"]", outputs[sidej].Data[i].toString(2).padStart(256, '0'));
+                    // }
+                    // console.log("Tools.AddToIntArray(outputs[sidej], value); -- END")
                 }
                 // sides
             }

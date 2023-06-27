@@ -111,8 +111,8 @@ export default class Tools {
 
     public static NewIntArray(max:number): IntArray {
         return {
-            DataCount: 1,
-            bitPos: max,
+            DataCount: 0,
+            bitPos: 0,
             maxBits: max,
             Data: [ new BN(0) ],
         };
@@ -126,7 +126,7 @@ export default class Tools {
         if(outputBuffer.bitPos + outputBuffer.maxBits < 256 ) {
             outputBuffer.Data[pos] = outputBuffer.Data[pos].add(v1);
             outputBuffer.bitPos = (outputBuffer.bitPos + outputBuffer.maxBits) % 256
-            return
+            return;
         }
         outputBuffer.Data[pos] = outputBuffer.Data[pos].add(
             v1.mod(

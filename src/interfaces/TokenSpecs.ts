@@ -29,7 +29,13 @@ export interface Layer {
     id: string;
     name: string;
     bitlength: number;
-    values: number[];
+    values: LayerValue[];
     minVal?: number;
     maxVal?: number;
+}
+
+export interface LayerValue {
+    id: number;
+    label: string;
+    path: string;
 }
