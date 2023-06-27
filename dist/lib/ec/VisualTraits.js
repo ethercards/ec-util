@@ -36,10 +36,11 @@ var VisualTraits = /** @class */ (function () {
         for (var i = 0; i < tokensToProcess; i++) {
             if (tokenJson[i] !== "undefined") {
                 var token = tokenJson[i];
-                var value = new bn_js_1.default(0);
-                var shift = 0;
                 // Each side of the token
-                for (var sidej = 0; sidej < token.sides.length; sidej++) {
+                // for(let sidej = 0; sidej < token.sides.length; sidej++) {
+                for (var sidej = 0; sidej < tokenSpecs.SideCount; sidej++) {
+                    var value = new bn_js_1.default(0);
+                    var shift = 0;
                     // split string by 2 chars ( hex )
                     var splitDNA = Tools_1.default.stringSplitter(token.sides[sidej].dna, 2);
                     // console.log("splitDNA", splitDNA);
@@ -58,7 +59,17 @@ var VisualTraits = /** @class */ (function () {
                         shift += bitlength;
                         value = value.add(shiftedValue);
                     }
+                    // console.log();
+                    // console.log("Tools.AddToIntArray(outputs[sidej], value); -- START")
+                    // for (let i = 0; i < outputs[sidej].Data.length; i++) {
+                    //     console.log("[o:"+i+"]", outputs[sidej].Data[i].toString(2).padStart(256, '0'));
+                    // }
+                    // console.log("value", value.toString(2).padStart( tokenSpecs.sides[sidej].bitlength, '0'));
                     Tools_1.default.AddToIntArray(outputs[sidej], value);
+                    // for (let i = 0; i < outputs[sidej].Data.length; i++) {
+                    //     console.log("[o:"+i+"]", outputs[sidej].Data[i].toString(2).padStart(256, '0'));
+                    // }
+                    // console.log("Tools.AddToIntArray(outputs[sidej], value); -- END")
                 }
                 // sides
             }

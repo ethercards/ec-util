@@ -78,8 +78,8 @@ var Tools = /** @class */ (function () {
     };
     Tools.NewIntArray = function (max) {
         return {
-            DataCount: 1,
-            bitPos: max,
+            DataCount: 0,
+            bitPos: 0,
             maxBits: max,
             Data: [new bn_js_1.default(0)],
         };
